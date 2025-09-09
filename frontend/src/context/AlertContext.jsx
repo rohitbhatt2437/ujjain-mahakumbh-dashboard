@@ -3,40 +3,46 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 const AlertContext = createContext(null);
 
 export const AlertProvider = ({ children }) => {
-  // Initialize alerts from localStorage to make them persistent
+  // State for active alerts
   const [alerts, setAlerts] = useState(() => {
-    const savedAlerts = localStorage.getItem('alerts');
-    return savedAlerts ? JSON.parse(savedAlerts) : [];
+    const saved = localStorage.getItem('alerts');
+    return saved ? JSON.parse(saved) : [];
   });
-
-  // Save alerts to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('alerts', JSON.stringify(alerts));
-  }, [alerts]);
+}, [alerts]);
 
-  // Function to add a new alert
+  // State for resolved alerts
+  const [resolvedAlerts, setResolvedAlerts] = useState(() => {
+    const saved = localStorage.getItem('resolvedAlerts');
+    return saved ? JSON.parse(saved) : [];
+  });
+  useEffect(() => {
+    localStorage.setItem('resolvedAlerts', JSON.stringify(resolvedAlerts));
+  }, [resolvedAlerts]);
+
   const addAlert = (alertDetails) => {
-    const newAlert = {
-      id: Date.now(), // Unique ID
-      ...alertDetails,
-      timestamp: new Date().toISOString(),
-    };
-    setAlerts(prevAlerts => [newAlert, ...prevAlerts]);
+    const newAlert = { id: Date.now(), ...alertDetails, timestamp: new Date().toISOString() };
+    setAlerts(prev => [newAlert, ...prev]);
   };
 
-  // Function to remove (resolve) an alert
   const resolveAlert = (alertId) => {
-    setAlerts(prevAlerts => prevAlerts.filter(alert => alert.id !== alertId));
+    const alertToResolve = alerts.find(alert => alert.id === alertId);
+    if (alertToResolve) {
+      const resolved = { ...alertToResolve, resolvedAt: new Date().toISOString() };
+      setResolvedAlerts(prev => [resolved, ...prev]);
+      setAlerts(prev => prev.filter(alert => alert.id !== alertId));
+    }
   };
 
   return (
-    <AlertContext.Provider value={{ alerts, addAlert, resolveAlert }}>
+    // 👇 The closing tag is now corrected
+    <AlertContext.Provider value={{ alerts, resolvedAlerts, addAlert, resolveAlert }}>
       {children}
     </AlertContext.Provider>
   );
 };
 
-// Custom hook for easy access to the context
 export const useAlerts = () => {
   return useContext(AlertContext);
 };
