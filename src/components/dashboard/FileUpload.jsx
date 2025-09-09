@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import DashboardCard from '../ui/DashboardCard';
 import { FiUploadCloud, FiFileText, FiLoader, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
+import { uploadFile } from '../../utils/api';
 
 const FileUpload = () => {
   const [recentUploads, setRecentUploads] = useState([]);
@@ -17,10 +18,7 @@ const FileUpload = () => {
     formData.append('medicalFile', file);
 
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await uploadFile(formData);
 
       if (!response.ok) {
         throw new Error('Upload failed'); 

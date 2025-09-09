@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { registerUser } from '../utils/api';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -22,11 +23,7 @@ const Login = () => {
 
   const handleRegister = async () => {
     try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'admin@example.com', password: 'password' }),
-      });
+      const response = await registerUser('admin@example.com', 'password');
       const data = await response.json();
       if (!response.ok) {
         alert(`Registration failed: ${data.message}`);
