@@ -20,6 +20,25 @@ const Login = () => {
     }
   };
 
+  const handleRegister = async () => {
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'admin@example.com', password: 'password' }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        alert(`Registration failed: ${data.message}`);
+      } else {
+        alert('Admin user registered successfully! You can now log in.');
+      }
+    } catch (err) {
+      alert('An error occurred during registration.');
+    }
+  };
+
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -57,6 +76,11 @@ const Login = () => {
             </button>
           </div>
         </form>
+        <div className="text-center">
+          <button onClick={handleRegister} className="mt-4 text-sm text-blue-600 hover:underline">
+            First Time Setup: Create Admin User
+          </button>
+        </div>
       </div>
     </div>
   );

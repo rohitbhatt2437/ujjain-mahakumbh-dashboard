@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { loginUser } = require('../controllers/auth.controller');
+const { registerUser, loginUser } = require('../controllers/auth.controller');
 
-router.post('/login', loginUser);
+router.post('/register', registerUser); // New route for creating users
+router.post('/login', loginUser);     // Existing route, now using new logic
 
 module.exports = router;

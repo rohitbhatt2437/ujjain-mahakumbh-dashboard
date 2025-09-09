@@ -23,7 +23,7 @@ const FileUpload = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        throw new Error('Upload failed'); 
       }
 
       const result = await response.json();
