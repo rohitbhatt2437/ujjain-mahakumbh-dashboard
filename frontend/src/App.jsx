@@ -12,10 +12,13 @@ import EmergencyResponse from './pages/EmergencyResponse';
 import Analytics from './pages/Analytics';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
+import { AlertProvider } from './context/AlertContext';
 
 function App() {
   return (
     <AuthProvider>
+      <AlertProvider>
+
       <Routes>
         <Route path="/login" element={<Login />} />
         
@@ -29,6 +32,7 @@ function App() {
         <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
         <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
       </Routes>
+      </AlertProvider>
     </AuthProvider>
   );
 }
