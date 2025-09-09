@@ -1,4 +1,4 @@
-const File = require('../models/file.model');
+import File from '../models/file.model.js';
 
 const uploadFile = async (req, res) => {
   try {
@@ -26,6 +26,6 @@ const uploadFile = async (req, res) => {
   }
 };
 
-module.exports = {
+export {
   uploadFile
 };

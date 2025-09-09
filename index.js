@@ -1,12 +1,17 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const connectDB = require('./config/db');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import connectDB from './config/db.js';
 
 // Import routes
-const authRoutes = require('./routes/auth.routes');
-const fileRoutes = require('./routes/file.routes');
+import authRoutes from './routes/auth.routes.js';
+import fileRoutes from './routes/file.routes.js';
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Initialize Express app
 const app = express();
@@ -33,4 +38,4 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 // Export the app for Vercel
-module.exports = app;
+export default app;

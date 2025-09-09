@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { uploadFile } from '../controllers/file.controller.js';
+import upload from '../middleware/multer.middleware.js';
+
 const router = express.Router();
-const { uploadFile } = require('../controllers/file.controller');
-const upload = require('../middleware/multer.middleware');
 
 // The 'upload.single()' middleware processes the file before it hits the controller
 router.post('/upload', upload.single('medicalFile'), uploadFile);
 
-module.exports = router;
+export default router;

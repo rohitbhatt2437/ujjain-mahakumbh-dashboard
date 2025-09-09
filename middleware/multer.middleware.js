@@ -1,5 +1,5 @@
-const multer = require('multer');
-const fs = require('fs');
+import multer from 'multer';
+import fs from 'fs';
 
 const uploadDir = 'uploads';
 // Ensure the uploads directory exists
@@ -19,4 +19,4 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-module.exports = upload;
+export default upload;
