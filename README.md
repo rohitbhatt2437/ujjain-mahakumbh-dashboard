@@ -13,10 +13,10 @@ Deployment: Vercel (static SPA + serverless Express entry `index.js`)
 2. Fill real values for `MONGO_URI` and `JWT_SECRET`.
 3. Install deps:
 	npm install
-4. Run backend + frontend (two terminals):
-	Terminal A: npm run start (starts Express on port 3001 in dev mode)
-	Terminal B: npm run dev (Vite dev server with proxy /api -> 3001)
-5. Open http://localhost:5173
+4. Run full stack (single command):
+	npm run dev:full
+5. Open http://localhost:5173 (proxy forwards /api -> http://localhost:3001)
+6. Health check: http://localhost:5173/api/health
 
 ## Tailwind
 Configured via `tailwind.config.js` and `postcss.config.js`. Global imports live in `src/index.css`.
@@ -36,6 +36,16 @@ Env vars must be configured in Vercel dashboard (Settings > Environment Variable
  - JWT_SECRET
  - VITE_API_URL (usually /api)
 
+### GitHub → Vercel CI/CD
+1. Push repo to GitHub.
+2. In Vercel: New Project → Import GitHub repo.
+3. Framework preset: Vite (auto-detected).
+4. Build Command: `npm run build` (auto).
+5. Output Directory: `dist` (auto).
+6. Add env vars for Production & Preview.
+7. Deploy.
+8. Test: https://your-app.vercel.app/api/health should return `{ status: "ok" }`.
+
 ## Security Notes
 Do NOT commit real secrets. Rotate the current committed credentials immediately (they were present in history).
 
@@ -43,6 +53,7 @@ Do NOT commit real secrets. Rotate the current committed credentials immediately
 dev        : Vite dev server
 start      : Start backend only
 start:api  : Alias of start
+dev:full   : Run frontend + backend concurrently
 build      : Production build (frontend)
 preview    : Preview built frontend
 lint       : Run ESLint

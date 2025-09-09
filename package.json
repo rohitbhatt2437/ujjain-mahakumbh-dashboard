@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start:api": "node index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev:full": "concurrently -k -n FRONTEND,API -c cyan,magenta \"vite\" \"node index.js\""
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -40,7 +41,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
-    "postcss": "^8.4.49",
-    "vite": "^7.1.2"
+  "postcss": "^8.4.49",
+  "concurrently": "^8.2.2",
+  "vite": "^7.1.2"
   }
 }
