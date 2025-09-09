@@ -16,7 +16,14 @@ const __dirname = path.dirname(__filename);
 // Initialize Express app
 const app = express();
 
-// Connect to Database
+// Validate required env vars early
+const requiredEnv = ['MONGO_URI', 'JWT_SECRET'];
+const missing = requiredEnv.filter(k => !process.env[k] || String(process.env[k]).trim() === '');
+if (missing.length) {
+  console.error('❌ Missing required environment variables:', missing.join(', '));
+}
+
+// Connect to Database (reuses existing connection in serverless warm starts)
 connectDB();
 
 // --- Middleware ---
@@ -27,6 +34,17 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // --- API Routes ---
 app.use('/api', authRoutes);
 app.use('/api', fileRoutes);
+
+// Health / diagnostics endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: Date.now(),
+    mongoConnected: !!(globalThis.__MONGO_CONNECTED__),
+    missingEnv: missing,
+  });
+});
 
 // --- START SERVER FOR LOCAL DEVELOPMENT ---
 // This part will be ignored by Vercel, but will run on your machine.

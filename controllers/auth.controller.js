@@ -24,7 +24,8 @@ const registerUser = async (req, res) => {
     res.status(201).json({ message: 'User registered successfully!' });
 
   } catch (error) {
-    res.status(500).json({ message: 'Server error during registration.', error });
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'Server error during registration.' });
   }
 };
 
@@ -55,7 +56,11 @@ const loginUser = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({ message: 'Server error during login.', error });
+    console.error('Login error:', error);
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json({ message: 'Server misconfiguration: JWT_SECRET missing.' });
+    }
+    res.status(500).json({ message: 'Server error during login.' });
   }
 };
 
