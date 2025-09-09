@@ -1,80 +1,67 @@
 # Ujjain Mahakumbh Dashboard
 
-Unified React (Vite) frontend + Express/MongoDB backend deployed on Vercel.
+React (Vite) SPA with an Express + MongoDB API, deployed on Vercel as a static site plus serverless function(s).
 
 ## Stack
-Frontend: React 18, React Router v6, Tailwind CSS, Leaflet, Recharts
-Backend: Express 5, Mongoose, Multer (file uploads), JWT (auth)
-Deployment: Vercel (static SPA + serverless Express entry `index.js`)
+- Frontend: React 18, React Router 6, Tailwind, Leaflet, Recharts
+- Backend: Express 5, Mongoose, Multer (uploads), JWT auth
+- Deploy: Vercel (SPA + serverless handler in `index.js`)
+
+## Project Structure
+- `index.js`: Express app and serverless handler (Vercel entry for `/api/*`)
+- `config/`: DB connection (`db.js`)
+- `routes/`, `controllers/`, `models/`: API layers
+- `middleware/`: Multer configuration for uploads
+- `src/`: React app (Vite). `src/utils/api.js` uses `import.meta.env.VITE_API_URL`
+- `public/`: Static assets (e.g., `vite.svg`) served by Vite
+
+## Environment Variables
+Create `.env` for local dev (do not commit real secrets):
+
+```
+MONGO_URI=<your mongodb connection string>
+JWT_SECRET=<your jwt secret>
+VITE_API_URL=/api
+```
+
+On Vercel (Project → Settings → Environment Variables): set the same keys for Production and Preview environments. Set `NODE_ENV=production` in Production.
 
 ## Local Development
-1. Copy env example:
-	cp .env.example .env  (Windows: copy .env.example .env)
-2. Fill real values for `MONGO_URI` and `JWT_SECRET`.
-3. Install deps:
-	npm install
-4. Run full stack (single command):
-	npm run dev:full
-5. Open http://localhost:5173 (proxy forwards /api -> http://localhost:3001)
+1. Copy example: `copy .env.example .env` (Windows) or `cp .env.example .env`
+2. Fill `MONGO_URI` and `JWT_SECRET`
+3. Install deps: `npm install`
+4. Run both frontend and API: `npm run dev:full`
+5. App: http://localhost:5173 (Vite proxies `/api` to `http://localhost:3001`)
 6. Health check: http://localhost:5173/api/health
 
-## Tailwind
-Configured via `tailwind.config.js` and `postcss.config.js`. Global imports live in `src/index.css`.
-If classes don't appear, ensure:
- - Dev server restarted after adding new file paths
- - Class names aren't built dynamically (e.g. `bg-${color}`) without safelisting
+Run only the API locally: `npm run start` (listens on `:3001`).
 
 ## Build & Preview
-Production build: npm run build
-Preview locally:  npm run preview
+- Build: `npm run build` (outputs to `dist/`)
+- Preview: `npm run preview`
 
-## Deployment (Vercel)
-`vercel.json` rewrites `/api/*` to the Express serverless function (`index.js`) and all other non-asset routes to `index.html` for SPA routing.
+## Deploy on Vercel
+- `vercel.json` routes:
+  - `/api/(.*)` → `index.js` (serverless Express handler)
+  - all other non-asset paths → `index.html` (SPA routing)
+- Configure env vars on Vercel: `MONGO_URI`, `JWT_SECRET`, `VITE_API_URL=/api`, `NODE_ENV=production`
+- Validate after deploy:
+  - `https://<your-app>.vercel.app/api/health` → `{ "status": "ok", ... }`
 
-Env vars must be configured in Vercel dashboard (Settings > Environment Variables):
- - MONGO_URI
- - JWT_SECRET
- - VITE_API_URL (usually /api)
-
-### GitHub → Vercel CI/CD
-1. Push repo to GitHub.
-2. In Vercel: New Project → Import GitHub repo.
-3. Framework preset: Vite (auto-detected).
-4. Build Command: `npm run build` (auto).
-5. Output Directory: `dist` (auto).
-6. Add env vars for Production & Preview.
-7. Deploy.
-8. Test: https://your-app.vercel.app/api/health should return `{ status: "ok" }`.
-
-## Security Notes
-Do NOT commit real secrets. Rotate the current committed credentials immediately (they were present in history).
+## Uploads on Vercel
+The server uses `/tmp/uploads` in production (Vercel’s writable but ephemeral storage). Files don’t persist across deployments or cold starts. For persistence, integrate object storage (e.g., S3 or Cloudinary). Local dev writes to `./uploads`.
 
 ## Scripts
-dev        : Vite dev server
-start      : Start backend only
-start:api  : Alias of start
-dev:full   : Run frontend + backend concurrently
-build      : Production build (frontend)
-preview    : Preview built frontend
-lint       : Run ESLint
-
-## Directory Structure (simplified)
-index.js          # Express app (serverless entry on Vercel)
-src/              # React app
-routes/           # Express route definitions
-controllers/      # Business logic
-models/           # Mongoose schemas
-uploads/          # Uploaded files (served at /uploads)
-
-## Adding Features
-1. Add new API route in `routes/` and controller logic in `controllers/`.
-2. Import it in `index.js` and `app.use('/api', newRoute)`.
-3. Consume from frontend via `fetchApi('/your-endpoint')` in `src/utils/api.js`.
+- `dev`: Vite dev server
+- `start` / `start:api`: Backend only
+- `dev:full`: Frontend + backend concurrently
+- `build`, `preview`, `lint`
 
 ## Troubleshooting
-Tailwind not applying: Check that component file extension is in `tailwind.config.js` content array.
-MIME type errors: Confirm `vercel.json` doesn't rewrite JS/CSS asset requests (current config preserves assets with file extensions).
-Auth failing: Ensure `JWT_SECRET` has no trailing spaces (fixed) and token stored in localStorage.
+- API 500s: verify env vars on Vercel; check project logs
+- Mongo connect errors: Atlas IP access rules and correct URI
+- SPA 404s on refresh: `vercel.json` keeps asset extensions and rewrites others to `index.html`
 
 ---
-Maintained and structured for clarity and production readiness.
+Production‑ready with serverless API and Vite SPA. For persistent uploads, integrate S3/Cloudinary.
+

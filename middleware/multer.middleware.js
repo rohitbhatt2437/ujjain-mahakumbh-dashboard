@@ -1,10 +1,19 @@
 import multer from 'multer';
 import fs from 'fs';
+import path from 'path';
 
-const uploadDir = 'uploads';
-// Ensure the uploads directory exists
-if (!fs.existsSync(uploadDir)){
-    fs.mkdirSync(uploadDir);
+// Use ephemeral /tmp in serverless to avoid write errors; persistent in dev
+const uploadDir = process.env.NODE_ENV === 'production'
+  ? path.join('/tmp', 'uploads')
+  : 'uploads';
+
+// Ensure the uploads directory exists (best-effort)
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (_) {
+  // ignore if cannot create (Vercel may restrict in some contexts)
 }
 
 const storage = multer.diskStorage({
