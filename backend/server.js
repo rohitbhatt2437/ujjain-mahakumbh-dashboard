@@ -1,32 +1,33 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
+const connectDB = require('./config/db');
 
+// Import routes
+const authRoutes = require('./routes/auth.routes');
+const fileRoutes = require('./routes/file.routes');
+
+// Initialize Express app
 const app = express();
-const port = 3001; // We'll run the backend on a different port
 
-// Middleware
-app.use(cors()); // Allow requests from our React frontend
-app.use(express.json()); // Allow the server to understand JSON request bodies
+// Connect to Database
+connectDB();
 
-// --- Simple Login Endpoint ---
-app.post('/login', (req, res) => {
-  const { email, password } = req.body;
+// --- Middleware ---
+app.use(cors());
+app.use(express.json());
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-  console.log('Login attempt:', { email, password });
+// --- API Routes ---
+// We'll prefix our routes with /api for good practice
+app.use('/api', authRoutes);
+app.use('/api', fileRoutes);
 
-  // IMPORTANT: In a real app, you would check these against a database!
-  // Here, we are just hardcoding them for the example.
-  if (email === 'admin@example.com' && password === 'password') {
-    // Successful login
-    res.status(200).json({
-      message: 'Login successful!',
-      token: 'fake-auth-token-12345', 
-    });
-  } else {
-    res.status(401).json({ message: 'Invalid email or password' });
-  }
-});
 
+// --- Start Server ---
+const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`Backend server listening at http://localhost:${port}`);
 });

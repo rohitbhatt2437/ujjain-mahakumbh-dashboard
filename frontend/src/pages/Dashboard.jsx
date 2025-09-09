@@ -1,5 +1,6 @@
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
+import Layout from '../components/layout/Layout';
 import StatCard from '../components/dashboard/StatCard';
 import RealTimeAlerts from '../components/dashboard/RealTimeAlerts';
 import FileUpload from '../components/dashboard/FileUpload';
@@ -14,11 +15,7 @@ import { FiUsers, FiMapPin, FiActivity, FiAlertTriangle, FiClock } from 'react-i
 
 const Dashboard = () => {
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 lg:p-6">
+    <Layout>
           <div className="space-y-6">
 
             {/* Top Row Stat Cards */}
@@ -55,9 +52,7 @@ const Dashboard = () => {
             </div>
 
           </div>
-        </main>
-      </div>
-    </div>
+    </Layout>
   );
 };
 

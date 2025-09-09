@@ -1,15 +1,19 @@
+import { Link, useLocation } from 'react-router-dom';
 import { FiHome, FiBarChart2, FiDroplet, FiMap, FiAlertTriangle, FiFileText, FiSettings, FiBriefcase } from 'react-icons/fi';
 
 const Sidebar = () => {
+  const location = useLocation(); // Hook to get the current URL path
+
+  // Add a 'path' property to each nav item
   const navItems = [
-    { icon: <FiHome />, name: 'Dashboard Overview', active: true },
-    { icon: <FiBriefcase />, name: 'Medical Operations' },
-    { icon: <FiDroplet />, name: 'Sanitation Monitoring' },
-    { icon: <FiMap />, name: 'Water Quality' },
-    { icon: <FiAlertTriangle />, name: 'Emergency Response' },
-    { icon: <FiBarChart2 />, name: 'Analytics' },
-    { icon: <FiFileText />, name: 'Emergency & Reports' },
-    { icon: <FiSettings />, name: 'System Settings' },
+    { icon: <FiHome />, name: 'Dashboard Overview', path: '/' },
+    { icon: <FiBriefcase />, name: 'Medical Operations', path: '/medical-operations' },
+    { icon: <FiDroplet />, name: 'Sanitation Monitoring', path: '/sanitation-monitoring' },
+    { icon: <FiMap />, name: 'Water Quality', path: '/water-quality' },
+    { icon: <FiAlertTriangle />, name: 'Emergency Response', path: '/emergency-response' },
+    { icon: <FiBarChart2 />, name: 'Analytics', path: '/analytics' },
+    { icon: <FiFileText />, name: 'Emergency & Reports', path: '/reports' },
+    { icon: <FiSettings />, name: 'System Settings', path: '/settings' },
   ];
 
   return (
@@ -20,14 +24,24 @@ const Sidebar = () => {
       </div>
       <nav className="flex-1 p-2">
         <ul>
-          {navItems.map((item, index) => (
-            <li key={index}>
-              <a href="#" className={`flex items-center p-3 my-1 rounded-lg transition-colors ${item.active ? 'bg-blue-100 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'}`}>
-                <span className="mr-3 text-lg">{item.icon}</span>
-                {item.name}
-              </a>
-            </li>
-          ))}
+          {navItems.map((item, index) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <li key={index}>
+                <Link
+                  to={item.path}
+                  className={`flex items-center p-3 my-1 rounded-lg transition-colors ${
+                    isActive
+                      ? 'bg-blue-100 text-blue-700 font-semibold'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
+                  }`}
+                >
+                  <span className="mr-3 text-lg">{item.icon}</span>
+                  {item.name}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </div>
