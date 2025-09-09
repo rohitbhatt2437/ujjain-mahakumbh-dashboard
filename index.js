@@ -16,14 +16,7 @@ const __dirname = path.dirname(__filename);
 // Initialize Express app
 const app = express();
 
-// Validate required env vars early
-const requiredEnv = ['MONGO_URI', 'JWT_SECRET'];
-const missing = requiredEnv.filter(k => !process.env[k] || String(process.env[k]).trim() === '');
-if (missing.length) {
-  console.error('❌ Missing required environment variables:', missing.join(', '));
-}
-
-// Connect to Database (reuses existing connection in serverless warm starts)
+// Connect to Database
 connectDB();
 
 // --- Middleware ---
@@ -35,15 +28,9 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api', authRoutes);
 app.use('/api', fileRoutes);
 
-// Health / diagnostics endpoint
+// Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    uptime: process.uptime(),
-    timestamp: Date.now(),
-    mongoConnected: !!(globalThis.__MONGO_CONNECTED__),
-    missingEnv: missing,
-  });
+  res.json({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() });
 });
 
 // --- START SERVER FOR LOCAL DEVELOPMENT ---
