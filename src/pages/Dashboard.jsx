@@ -1,6 +1,5 @@
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
-import { Link } from 'react-router-dom';
 import Layout from '../components/layout/Layout';
 import StatCard from '../components/dashboard/StatCard';
 import RealTimeAlerts from '../components/dashboard/RealTimeAlerts';
@@ -12,7 +11,7 @@ import WasteManagement from '../components/dashboard/WasteManagement';
 import OutbreakDelineation from '../components/dashboard/OutbreakDelineation';
 import EmergencyConsole from '../components/dashboard/EmergencyConsole';
 
-import { FiUsers, FiMap, FiActivity, FiAlertTriangle, FiClock } from 'react-icons/fi';
+import { FiUsers, FiActivity, FiAlertTriangle, FiClock } from 'react-icons/fi';
 
 const Dashboard = () => {
   return (
@@ -39,17 +38,7 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="lg:col-span-2 bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center">
-            <FiMap className="text-6xl text-blue-500 mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800">Live Operations Map</h2>
-            <p className="text-gray-500 mt-2 mb-6">View all facilities, teams, and routes in real-time.</p>
-            <Link 
-              to="/live-map" 
-              className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
-            >
-              Open Live Map
-            </Link>
-          </div>
+            {/* Live Operations Map column removed as requested */}
         
 
             {/* Third Row with Charts */}

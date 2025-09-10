@@ -1,20 +1,26 @@
 import DashboardCard from '../ui/DashboardCard';
 
+const OPS_PEOPLE = [
+  'Harpreet Singh',
+  'Manpreet Kaur',
+  'Gurpreet Sandhu',
+  'Navjot Sidhu',
+  'Ankita Sharma',
+  'Deepak Kumar',
+  'Jaspreet Kaur',
+];
+
 const SanitationOps = () => {
   return (
     <DashboardCard title="Sanitation Operations & Coordination">
-        <div className="flex items-center justify-around h-full">
-            <div className="text-center">
-                <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-4xl font-bold text-blue-700">
-                    75
-                </div>
-                <p className="text-sm font-semibold mt-2">Outbreak Fide Dashboard</p>
-            </div>
-            <div className="w-2/3 h-32 bg-gray-200 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Chart Area</p>
-            </div>
-        </div>
+      <div className="max-h-64 overflow-y-auto pr-2">
+        <ul className="divide-y divide-gray-200">
+          {OPS_PEOPLE.map((name, idx) => (
+            <li key={idx} className="py-2 text-sm text-gray-800">{name}</li>
+          ))}
+        </ul>
+      </div>
     </DashboardCard>
-  )
+  );
 }
 export default SanitationOps

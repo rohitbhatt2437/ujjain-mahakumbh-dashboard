@@ -83,7 +83,12 @@ const OutbreakMap = () => {
     
     const [filteredItems, setFilteredItems] = useState([]);
     
-    const startPoint = [23.185, 75.79];
+    // Local banner state for transient notifications
+    const [showFullBanner, setShowFullBanner] = useState(false);
+    const [fullBannerText, setFullBannerText] = useState('');
+    
+    // Ujjain, Madhya Pradesh approximate coordinates
+    const startPoint = [23.176, 75.788];
     const [destination, setDestination] = useState(null);
 
     // This effect filters the items to be displayed based on the selected mode
@@ -120,9 +125,43 @@ const OutbreakMap = () => {
     // --- Handlers for all actions ---
     const handleSetDestination = (latlng) => { if (mode === 'routing') setDestination([latlng.lat, latlng.lng]); };
     
-    const handleAddDustbin = (latlng) => { if (mode === 'dustbin') { const newItem = { id: Date.now(), name: `Dustbin ${dustbins.length + 1}`, lat: latlng.lat, lng: latlng.lng, status: 'Clean' }; setDustbins(prev => [...prev, newItem]); } };
-    const handleToggleDustbinStatus = (id) => setDustbins(prev => prev.map(d => d.id === id ? { ...d, status: d.status === 'Clean' ? 'Full' : 'Clean' } : d));
-    const handleDeleteDustbin = (id) => setDustbins(prev => prev.filter(d => d.id !== id));
+    // Helper to show a 3-second banner when a dustbin becomes full
+    const showDustbinFullBanner = () => {
+      setFullBannerText('Dustbin in Ujjain is full');
+      setShowFullBanner(true);
+      setTimeout(() => setShowFullBanner(false), 3000);
+    };
+
+    const handleAddDustbin = (latlng) => {
+      if (mode === 'dustbin') {
+        const newItem = {
+          id: Date.now(),
+          name: `Dustbin ${dustbins.length + 1}`,
+          lat: latlng.lat,
+          lng: latlng.lng,
+          status: 'Clean',
+        };
+        // Add the new dustbin immediately
+        setDustbins((prev) => [...prev, newItem]);
+      }
+    };
+    const handleToggleDustbinStatus = (id) => {
+      setDustbins(prev => prev.map(d => {
+        if (d.id !== id) return d;
+        const nextStatus = d.status === 'Clean' ? 'Full' : 'Clean';
+        // Trigger banner only when switching to Full
+        if (nextStatus === 'Full') {
+          showDustbinFullBanner();
+        }
+        return { ...d, status: nextStatus };
+      }));
+    };
+    const handleDeleteDustbin = (id) => {
+      setDustbins(prev => prev.filter(d => d.id !== id));
+      setFullBannerText('Dustbin deleted');
+      setShowFullBanner(true);
+      setTimeout(() => setShowFullBanner(false), 2000);
+    };
     
     const handleAddToilet = (latlng) => { if (mode === 'toilet') { const newItem = { id: Date.now(), name: `Toilet ${toilets.length + 1}`, lat: latlng.lat, lng: latlng.lng, status: 'Clean' }; setToilets(prev => [...prev, newItem]); } };
     const handleToggleToiletStatus = (id) => setToilets(prev => prev.map(t => t.id === id ? { ...t, status: t.status === 'Clean' ? 'Needs Cleaning' : 'Clean' } : t));
@@ -147,6 +186,11 @@ const OutbreakMap = () => {
                 <button onClick={() => setMode('medicalCamp')} className={`px-3 py-1 text-sm font-semibold rounded-md transition ${mode === 'medicalCamp' ? 'bg-red-500 text-white' : 'text-gray-700'}`}>Medical Camps</button>
                 <button onClick={() => setMode('waterPoint')} className={`px-3 py-1 text-sm font-semibold rounded-md transition ${mode === 'waterPoint' ? 'bg-sky-500 text-white' : 'text-gray-700'}`}>Water Points</button>
             </div>
+            {showFullBanner && (
+              <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[1000] bg-red-600 text-white px-4 py-2 rounded shadow-lg text-sm font-semibold">
+                {fullBannerText}
+              </div>
+            )}
             
             <div className="h-full w-full rounded-md overflow-hidden min-h-[400px]">
                 <MapContainer center={startPoint} zoom={14} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
