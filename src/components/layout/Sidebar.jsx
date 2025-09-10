@@ -1,11 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
-import { FiHome, FiBarChart2, FiDroplet, FiMap, FiAlertTriangle, FiFileText, FiSettings, FiBriefcase, FiEye } from 'react-icons/fi';
-import { useView } from '../../context/ViewContext';
+import { FiHome, FiBarChart2, FiDroplet, FiMap, FiAlertTriangle, FiFileText, FiBriefcase } from 'react-icons/fi';
 
 const Sidebar = () => {
   const location = useLocation(); 
-  
-  const { toggleView } = useView(); // Hook to get the current URL path
+
 
   // Add a 'path' property to each nav item
   const navItems = [
@@ -16,7 +14,6 @@ const Sidebar = () => {
     { icon: <FiAlertTriangle />, name: 'Emergency Response', path: '/emergency-response' },
     { icon: <FiBarChart2 />, name: 'Analytics', path: '/analytics' },
     { icon: <FiFileText />, name: 'Emergency & Reports', path: '/reports' },
-    { icon: <FiSettings />, name: 'System Settings', path: '/settings' },
   ];
 
   return (
@@ -46,16 +43,6 @@ const Sidebar = () => {
             );
           })}
         </ul>
-        <div className="p-2 mt-auto border-t">
-          <Link
-            to="/live-map" // Navigate to the map page
-            onClick={toggleView} // AND toggle the view
-            className="flex items-center p-3 my-1 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-800 transition-colors"
-          >
-            <FiEye className="mr-3 text-lg" />
-            User View
-          </Link>
-        </div>
       </nav>
     </div>
   );
