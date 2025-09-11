@@ -1,10 +1,8 @@
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
 
 // Import all your pages
 import Dashboard from './pages/Dashboard';
-import Login from './pages/Login';
 import MedicalOperations from './pages/MedicalOperations';
 import SanitationMonitoring from './pages/SanitationMonitoring';
 import WaterQuality from './pages/WaterQuality';
@@ -18,16 +16,14 @@ function App() {
     <AuthProvider>
       <AlertProvider>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            
-            {/* Wrap all main pages in the ProtectedRoute */}
-            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/medical-operations" element={<ProtectedRoute><MedicalOperations /></ProtectedRoute>} />
-            <Route path="/sanitation-monitoring" element={<ProtectedRoute><SanitationMonitoring /></ProtectedRoute>} />
-            <Route path="/water-quality" element={<ProtectedRoute><WaterQuality /></ProtectedRoute>} />
-            <Route path="/emergency-response" element={<ProtectedRoute><EmergencyResponse /></ProtectedRoute>} />
-            <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-            <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+            {/* Direct routes without authentication */}
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/medical-operations" element={<MedicalOperations />} />
+            <Route path="/sanitation-monitoring" element={<SanitationMonitoring />} />
+            <Route path="/water-quality" element={<WaterQuality />} />
+            <Route path="/emergency-response" element={<EmergencyResponse />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/reports" element={<Reports />} />
           </Routes>
       
       </AlertProvider>
