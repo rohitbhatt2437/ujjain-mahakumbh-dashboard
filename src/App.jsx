@@ -1,5 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 
 // Import all your pages
 import Dashboard from './pages/Dashboard';
@@ -10,20 +12,29 @@ import EmergencyResponse from './pages/EmergencyResponse';
 import Analytics from './pages/Analytics';
 import Reports from './pages/Reports';
 import { AlertProvider } from './context/AlertContext';
+import Login from './pages/Login';
 
 function App() {
+  const PrivateRoute = ({ children }) => {
+    const { isAuthenticated } = useAuth();
+    return isAuthenticated ? children : <Navigate to="/login" replace />;
+  };
+
   return (
     <AuthProvider>
       <AlertProvider>
           <Routes>
-            {/* Direct routes without authentication */}
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/medical-operations" element={<MedicalOperations />} />
-            <Route path="/sanitation-monitoring" element={<SanitationMonitoring />} />
-            <Route path="/water-quality" element={<WaterQuality />} />
-            <Route path="/emergency-response" element={<EmergencyResponse />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/reports" element={<Reports />} />
+            {/* Public route */}
+            <Route path="/login" element={<Login />} />
+
+            {/* Protected routes */}
+            <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/medical-operations" element={<PrivateRoute><MedicalOperations /></PrivateRoute>} />
+            <Route path="/sanitation-monitoring" element={<PrivateRoute><SanitationMonitoring /></PrivateRoute>} />
+            <Route path="/water-quality" element={<PrivateRoute><WaterQuality /></PrivateRoute>} />
+            <Route path="/emergency-response" element={<PrivateRoute><EmergencyResponse /></PrivateRoute>} />
+            <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
+            <Route path="/reports" element={<PrivateRoute><Reports /></PrivateRoute>} />
           </Routes>
       
       </AlertProvider>

@@ -75,7 +75,7 @@ const Login = () => {
         </form>
         <div className="text-center">
           <button onClick={handleRegister} className="mt-4 text-sm text-blue-600 hover:underline">
-            First Time Setup: Create Admin User
+            
           </button>
         </div>
       </div>
